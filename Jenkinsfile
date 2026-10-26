@@ -1,6 +1,9 @@
 #!/usr/bin/env groovy
 pipeline {
     agent any
+    options {
+        skipStagesAfterUnstable()
+    }
     stages {
         stage('Build') {
             steps {
@@ -17,6 +20,11 @@ pipeline {
                     // junit is a Jenkins step, not a Maven goal; reports sit in each module's target folder
                     junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true
                 }
+            }
+        }
+        stage('Deliver') {
+            steps {
+                sh './scripts/deliver.sh'
             }
         }
     }
